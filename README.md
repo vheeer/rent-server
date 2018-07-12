@@ -13,10 +13,17 @@ npm install
 npm start
 ```
 
+## Debug with pm2
+
+Use pm2 to debug on development enviroment.
+
+```
+pm2 start development.json
+```
 ## Deploy with pm2
 
 Use pm2 to deploy app on production enviroment.
 
 ```
-pm2 startOrReload pm2.json
+pm2 start production.json
 ```
