@@ -34,15 +34,15 @@ exports.model = {
     logSql: isDev,
     logger: msg => think.logger.info(msg)
   },
-  mysql: {
+  rent: {
     handle: mysql,
-    database: '',
-    prefix: 'think_',
+    database: 'rent',
+    prefix: '',
     encoding: 'utf8',
-    host: '127.0.0.1',
-    port: '',
-    user: 'root',
-    password: 'root',
+    host: '140.143.130.253',
+    port: '3306',
+    user: 'vheeer',
+    password: ';Classmate1133',
     dateStrings: true
   }
 };
