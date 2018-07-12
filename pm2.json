@@ -1,0 +1,15 @@
+{
+  "apps": [{
+    "name": "rent-server",
+    "script": "production.js",
+    "cwd": "/var/www/rent-server",
+    "exec_mode": "fork",
+    "max_memory_restart": "1G",
+    "autorestart": true,
+    "node_args": [],
+    "args": [],
+    "env": {
+      
+    }
+  }]
+}
