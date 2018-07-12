@@ -36,3 +36,6 @@ app/
 
 config.development.js
 adapter.development.js
+
+# nginx
+nginx.conf
