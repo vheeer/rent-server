@@ -5,6 +5,7 @@ module.exports = function(modelName, columns) {
      * @return {Promise}
      */
     async readAction() {
+
       think.logger.info('this.get is ', this.get());
       const { columns } = this.ctx.state;
       think.logger.info('columns', columns);
@@ -24,14 +25,6 @@ module.exports = function(modelName, columns) {
           data = await this.model(modelName).field(columns).page(page, pageSize).countSelect();
         }
       }
-      if (data.data.length > 0 && typeof data.data[0].user_id === 'number') // 如果存在user_id就提取出昵称和头像
-      {
-        for (const item of data.data) {
-          const user = await this.model('user').field('nickname, avatar').where({ id: item.user_id }).find();
-          item.nickname = user.nickname;
-          item.avatar = user.avatar;
-        }
-      }
       return this.success(data);
     },
     /**
@@ -40,10 +33,14 @@ module.exports = function(modelName, columns) {
      * @return {Promise}
      */
     async selectAction() {
-      const { columns } = this.ctx.state;
-      const params = this.get();
+      let params = this.get();
+      const { _page, _pageSize, _sort, _limit, ..._where } = params;
+      if (think.isEmpty(params)) {
+        // 兼容where无参数情况
+        params = 1;
+      }
 
-      const data = await this.model(modelName).field(columns).where({ params }).countSelect();
+      const data = await this.model(modelName).field(columns).where(_where).limit(_limit).order(_sort).page(_page, _pageSize).countSelect();
       return this.success(data);
     },
     /**
@@ -51,10 +48,15 @@ module.exports = function(modelName, columns) {
      * @return {Promise}
      */
     async createAction() {
-      // return this.fail("can not create");
-      const result = await this.model(modelName).add({
-        ...this.post(),
+      let { id, ...params } = this.post;
+      if (!id) {
+        id = -1;
+      }
+      const result = await this.model(modelName).thenUpdate({
+        ...params,
         add_time: parseInt(new Date().getTime() / 1000)
+      }, {
+        id
       });
 
       return this.success(result);
@@ -65,10 +67,8 @@ module.exports = function(modelName, columns) {
      * @return {Promise}
      */
     async updateAction() {
-      console.log('this.post is ', this.post());
-      const postBody = this.post();
-      const { id } = postBody;
-      delete postBody.id;
+      const params = this.post();
+      const { id, ...postBody } = params;
 
       const data = await this.model(modelName).where({ id }).update(postBody);
 
@@ -80,7 +80,6 @@ module.exports = function(modelName, columns) {
      * @return {Promise}
      */
     async deleteAction() {
-      // return this.fail("can not delete");
       const postBody = this.post();
       const { id } = postBody;
 
@@ -90,6 +89,7 @@ module.exports = function(modelName, columns) {
 
       return this.success(data);
     },
+
     async testAction() {
       const service = this.service('saveimg');
       console.log('new service.a', service.save);
