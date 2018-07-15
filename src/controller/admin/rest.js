@@ -29,7 +29,7 @@ module.exports = function(modelName, columns) {
     },
     /**
      * 根据字段键值搜索
-     * find request
+     * select request
      * @return {Promise}
      */
     async selectAction() {
@@ -44,11 +44,33 @@ module.exports = function(modelName, columns) {
       return this.success(data);
     },
     /**
+     * 根据字段键值搜索
+     * find request
+     * @return {Promise}
+     */
+    async matchAction() {
+      let params = this.get();
+      const { _page, _pageSize, _sort, _limit, ..._where } = params;
+      if (think.isEmpty(params)) {
+        // 兼容where无参数情况
+        params = 1;
+      }
+
+      let whereStr = '';
+      Object.keys(_where).forEach(key => {
+        whereStr += key + ' like ' + '\'%' + _where[key] + '%\' and ';
+      });
+      whereStr = whereStr.substr(0, whereStr.length - 5);
+      const data = await this.model(modelName).field(columns).where(whereStr).limit(_limit).order(_sort).page(_page, _pageSize).countSelect();
+      return this.success(data);
+    },
+    /**
      * create request
      * @return {Promise}
      */
     async createAction() {
-      let { id, ...params } = this.post;
+      think.logger.debug(this.post());
+      let { id, ...params } = this.post();
       if (!id) {
         id = -1;
       }
