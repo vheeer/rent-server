@@ -74,13 +74,31 @@ module.exports = function(modelName, columns) {
       if (!id) {
         id = -1;
       }
-      const result = await this.model(modelName).thenUpdate({
+      const singleData = {
         ...params,
         add_time: parseInt(new Date().getTime() / 1000)
-      }, {
-        id
-      });
+      };
+      const result = await this.model(modelName).thenUpdate(singleData, { id });
 
+      return this.success(result);
+    },
+    /**
+     * createmul request
+     * @return {Promise}
+     */
+    async createmulAction() {
+      think.logger.debug(this.post());
+      const { _count, ...params } = this.post();
+      // 批量
+      const singleData = {
+        ...params,
+        add_time: parseInt(new Date().getTime() / 1000)
+      };
+      const data = [];
+      for (let i = 0; i < parseInt(_count); i++) {
+        data.push(singleData);
+      }
+      const result = await this.model(modelName).addMany(data);
       return this.success(result);
     },
 
@@ -89,12 +107,21 @@ module.exports = function(modelName, columns) {
      * @return {Promise}
      */
     async updateAction() {
-      const params = this.post();
-      const { id, ...postBody } = params;
+      const { id, _ids, ...updateBody } = this.post();
 
-      const data = await this.model(modelName).where({ id }).update(postBody);
+      let result;
 
-      return this.success(data);
+      if (id && !_ids) {
+        result = await this.model(modelName).where({ id }).update(updateBody);
+      } else if (!id && _ids) {
+        result = await this.model(modelName).where('id in (' + _ids + ')').update(updateBody);
+      } else if (!id && !_ids) {
+        return this.fail('delete requires id(s)');
+      } else {
+        return this.fail('can not update id');
+      }
+
+      return this.success(result);
     },
 
     /**
@@ -102,14 +129,21 @@ module.exports = function(modelName, columns) {
      * @return {Promise}
      */
     async deleteAction() {
-      const postBody = this.post();
-      const { id } = postBody;
+      const { id, _ids } = this.post();
 
-      if (!id) { return this.fail('id is undefined') }
+      let result;
 
-      const data = await this.model(modelName).where({ id }).delete();
+      if (id && !_ids) {
+        result = await this.model(modelName).where({ id }).delete();
+      } else if (!id && _ids) {
+        result = await this.model(modelName).where('id in (' + _ids + ')').delete();
+      } else if (!id && !_ids) {
+        return this.fail('delete requires id(s)');
+      } else {
+        return this.fail('can not set params both id and ids');
+      }
 
-      return this.success(data);
+      return this.success(result);
     },
 
     async testAction() {
