@@ -1,7 +1,7 @@
 const Base = require('./base.js');
 const Rest = require('./rest.js');
 
-const namespace = 'shop';
+const namespace = 'custom';
 
 const actions = Rest(namespace);
 

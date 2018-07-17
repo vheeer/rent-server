@@ -58,12 +58,24 @@ module.exports = function(modelName, columns) {
 
       let whereStr = '';
       Object.keys(_where).forEach(key => {
-        whereStr += key + ' like ' + '\'%' + _where[key] + '%\' and ';
+        const value = _where[key];
+        if (typeof value === 'undefined' || value === '') {
+          return;
+        }
+        if (key.indexOf('_time') > -1) {
+          const timestamp = _where[key] / 1000;
+          whereStr += `DATE_FORMAT(FROM_UNIXTIME(${key}),'%Y-%m-%d') = DATE_FORMAT(FROM_UNIXTIME(${timestamp}),'%Y-%m-%d') and `;
+        } else if (key.indexOf('is_') > -1) {
+          whereStr += key + '=' + _where[key] + ' and ';
+        } else {
+          whereStr += key + ' like ' + '\'%' + _where[key] + '%\' and ';
+        }
       });
       whereStr = whereStr.substr(0, whereStr.length - 5);
       const data = await this.model(modelName).field(columns).where(whereStr).limit(_limit).order(_sort).page(_page, _pageSize).countSelect();
       return this.success(data);
     },
+
     /**
      * create request
      * @return {Promise}
@@ -130,7 +142,7 @@ module.exports = function(modelName, columns) {
      */
     async deleteAction() {
       const { id, _ids } = this.post();
-
+      console.log('id in (' + _ids + ')');
       let result;
 
       if (id && !_ids) {
