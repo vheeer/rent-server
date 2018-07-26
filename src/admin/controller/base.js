@@ -1,19 +1,61 @@
 module.exports = class extends think.Controller {
-  __before() {
-    console.log("***********************admin before***********************");
+  async __before() {
+    think.logger.info('***********************admin before***********************');
     const _this = this;
-    const database = "rent";
+
+    const database = 'rent';
+
+    const environment = this.config('environment');
+    const authIgnore = this.config('authIgnore');
+
+    const urlArr = this.ctx.url.split('/');
+    const path = urlArr[2] + '.' + urlArr[3].replace('?', '');
+
     // 多商户
     this.model_1 = this.model;
-    this.model = (function(model_com) {
-      return function(name, model_spe, m) {
-        return _this.model_1(name, model_spe || model_com, m);
+    this.model = (function(modelCom) {
+      return function(name, modelSpe, m) {
+        return _this.model_1(name, modelSpe || modelCom, m);
       };
     }(database));
     // 设置头信息
-    this.header('Access-Control-Allow-Headers', 'content-type');
-    this.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8000');
-    this.header('Access-Control-Allow-Headers', 'withcredentials');
-    this.header('Access-Control-Allow-Credentials', 'true');
+    if (environment !== 'production') {
+      this.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8000');
+      this.header('Access-Control-Allow-Headers', 'withcredentials');
+      this.header('Access-Control-Allow-Credentials', 'true');
+    }
+    if (!(authIgnore.indexOf(path) > -1)) {
+      // 请求需要登录校验
+      const userName = this.cookie('userName');
+      const token = this.cookie('token');
+      const vheeer = this.cookie('vheeer');
+      // 检查用户名和秘钥是否存在
+      const noAuth = {
+        timestamp: Date.now(),
+        status: 403,
+        error: 'Unauthorized',
+        message: 'Unauthorize',
+        path: '/base/category/list'
+      };
+      console.log(userName);
+      console.log(token);
+      console.log(vheeer);
+      if (think.isEmpty(userName) || think.isEmpty(token)) {
+        think.logger.warn('用户名或秘钥不存在');
+        this.status = 401;
+        this.ctx.body = noAuth;
+        return false;
+      }
+      const tokenCache = await this.cache(userName, userName => {
+        const AS = _this.service('account');
+        return AS.getToken(userName);
+      });
+      if (token !== tokenCache) {
+        think.logger.warn('用户秘钥不匹配');
+        this.status = 401;
+        this.ctx.body = noAuth;
+        return false;
+      }
+    }
   }
 };

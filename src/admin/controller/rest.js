@@ -5,7 +5,6 @@ module.exports = function(modelName, columns) {
      * @return {Promise}
      */
     async readAction() {
-
       think.logger.info('this.get is ', this.get());
       const { columns } = this.ctx.state;
       think.logger.info('columns', columns);
@@ -73,6 +72,20 @@ module.exports = function(modelName, columns) {
       });
       whereStr = whereStr.substr(0, whereStr.length - 5);
       const data = await this.model(modelName).field(columns).where(whereStr).limit(_limit).order(_sort).page(_page, _pageSize).countSelect();
+      // 如果有关联查询，把查询结果扁平化（comment）
+      data.data.forEach(row => {
+        // 单条数据记录
+        Object.keys(row).forEach(key => {
+          // 单个字段
+          if (row[key] instanceof Object) {
+            // 对象字段
+            Object.keys(row[key]).forEach(relationKey => {
+              row[key + '_' + relationKey] = row[key][relationKey];
+            });
+            delete row[key];
+          }
+        });
+      });
       return this.success(data);
     },
 
