@@ -37,15 +37,16 @@ module.exports = class extends think.Controller {
         message: 'Unauthorize',
         path: '/base/category/list'
       };
-      console.log(userName);
-      console.log(token);
-      console.log(vheeer);
+      think.logger.info(userName);
+      think.logger.info(token);
+      think.logger.info(vheeer);
       if (think.isEmpty(userName) || think.isEmpty(token)) {
         think.logger.warn('用户名或秘钥不存在');
         this.status = 401;
         this.ctx.body = noAuth;
         return false;
       }
+      // 比较缓存token
       const tokenCache = await this.cache(userName, userName => {
         const AS = _this.service('account');
         return AS.getToken(userName);
