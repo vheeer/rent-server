@@ -8,8 +8,9 @@ module.exports = class extends think.Controller {
     const environment = this.config('environment');
     const authIgnore = this.config('authIgnore');
 
-    const urlArr = this.ctx.url.split('/');
-    const path = urlArr[2] + '.' + urlArr[3].replace('?', '');
+    const controller = this.ctx.controller;
+    const action = this.ctx.action;
+    const path = controller + '/' + action;
 
     // 多商户
     this.model_1 = this.model;
@@ -18,13 +19,13 @@ module.exports = class extends think.Controller {
         return _this.model_1(name, modelSpe || modelCom, m);
       };
     }(database));
-    // 设置头信息
+    // 开发环境设置头信息
     if (environment !== 'production') {
       this.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8000');
       this.header('Access-Control-Allow-Headers', 'withcredentials');
       this.header('Access-Control-Allow-Credentials', 'true');
     }
-    if (!(authIgnore.indexOf(path) > -1)) {
+    if (!(authIgnore.includes(path))) {
       // 请求需要登录校验
       const userName = this.cookie('userName');
       const token = this.cookie('token');
