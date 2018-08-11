@@ -78,7 +78,7 @@ module.exports = class extends Base {
     const sessionKey = await TokenSerivce.create(sessionData);
 
     if (think.isEmpty(newUserInfo) || think.isEmpty(sessionKey)) {
-      return this.fail('think.isEmpty(newUserInfo) || think.isEmpty(sessionKey)登录失败');
+      return this.fail('没有用户信息，登录失败');
     }
 
     return this.success({ token: sessionKey, userInfo: newUserInfo });
@@ -87,4 +87,21 @@ module.exports = class extends Base {
   async logoutAction() {
     return this.success();
   }
-};
+
+  async getmobileAction() {
+    const { weapp: { appid } } = this.config();
+    const { userId } = this.ctx.state;
+    const { encryptedData, iv } = this.post();
+
+    if (think.isEmpty(encryptedData) || think.isEmpty(iv)) {
+      return this.fail();
+    }
+
+    const { session_key: sessionKey, openid } = await this.model('custom').where({ id: userId }).find();
+
+    const getMobileSerivce = this.service('getmobile', { appId: appid, sessionKey });
+    const { purePhoneNumber } = getMobileSerivce.decryptData(encryptedData, iv);
+
+    return this.success(purePhoneNumber);
+  }
+}
