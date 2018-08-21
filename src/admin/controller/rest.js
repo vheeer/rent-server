@@ -95,15 +95,16 @@ module.exports = function(modelName, columns) {
      */
     async createAction() {
       think.logger.debug(this.post());
-      let { id, ...params } = this.post();
+      const { id, ...params } = this.post();
+      let currentId = id;
       if (!id) {
-        id = -1;
+        currentId = -1;
       }
       const singleData = {
         ...params,
         add_time: parseInt(new Date().getTime() / 1000)
       };
-      const result = await this.model(modelName).thenUpdate(singleData, { id });
+      const result = await this.model(modelName).thenUpdate(singleData, { id: currentId });
 
       return this.success(result);
     },
@@ -155,7 +156,6 @@ module.exports = function(modelName, columns) {
      */
     async deleteAction() {
       const { id, _ids } = this.post();
-      console.log('id in (' + _ids + ')');
       let result;
 
       if (id && !_ids) {
@@ -173,7 +173,6 @@ module.exports = function(modelName, columns) {
 
     async testAction() {
       const service = this.service('saveimg');
-      console.log('new service.a', service.save);
       return this.success('result');
     },
     /**

@@ -1,3 +1,7 @@
 {
-  "extends": "think"
+  "extends": "think",
+  "rules": {
+    // 双峰驼命名格式
+    "camelcase": 0
+  }
 }

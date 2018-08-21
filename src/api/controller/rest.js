@@ -1,9 +1,25 @@
 module.exports = function(modelName, columns) {
   return {
-  /**
-   * read request
-   * @return {Promise}
-   */
+    async findAction() {
+      const { id } = this.get();
+      const data = await this.model(modelName).where({ id }).find();
+      // 如果有关联查询，把查询结果扁平化（comment）
+      Object.keys(data).forEach(key => {
+        // 单个字段
+        if (data[key] instanceof Object) {
+          // 对象字段
+          Object.keys(data[key]).forEach(relationKey => {
+            data[key + '_' + relationKey] = data[key][relationKey];
+          });
+          delete data[key];
+        }
+      });
+      return this.success(data);
+    },
+    /**
+     * read request
+     * @return {Promise}
+     */
     async readAction() {
       think.logger.info('this.get is ', this.get());
       const { columns } = this.ctx.state;
@@ -16,87 +32,169 @@ module.exports = function(modelName, columns) {
         data = await this.model(modelName).field(columns).where({ id }).countSelect();
       } else if (!id && !value && !key) {
         // 批量查询
-        if (order) // 按字段排序
-        {
+        if (order) {
+          // 按字段排序
           data = await this.model(modelName).field(columns).order(order).page(page, pageSize).countSelect();
-        } else if (!order) // 默认排序
-        {
+        } else if (!order) {
+          // 默认排序
           data = await this.model(modelName).field(columns).page(page, pageSize).countSelect();
         }
       }
-      if (data.data.length > 0 && typeof data.data[0].user_id === 'number') // 如果存在user_id就提取出昵称和头像
-      {
-        for (const item of data.data) {
-          const user = await this.model('user').field('nickname, avatar').where({ id: item.user_id }).find();
-          item.nickname = user.nickname;
-          item.avatar = user.avatar;
-        }
-      }
       return this.success(data);
     },
     /**
+     * 根据字段键值搜索
+     * select request
+     * @return {Promise}
+     */
+    async selectAction() {
+      let params = this.get();
+      const { _page, _pageSize, _sort, _limit, ..._where } = params;
+      if (think.isEmpty(params)) {
+        // 兼容where无参数情况
+        params = 1;
+      }
+
+      const data = await this.model(modelName).field(columns).where(_where).limit(_limit).order(_sort).page(_page, _pageSize).countSelect();
+      return this.success(data);
+    },
+    /**
+     * 根据字段键值搜索
      * find request
      * @return {Promise}
      */
-    async findAction() {
-      const { columns } = this.ctx.state;
-      const { id } = this.get();
-      const data = await this.model(modelName).field(columns).where({ id }).countSelect();
+    async matchAction() {
+      let params = this.get();
+      const { _page, _pageSize, _sort, _limit, ..._where } = params;
+      if (think.isEmpty(params)) {
+        // 兼容where无参数情况
+        params = 1;
+      }
+
+      let whereStr = '';
+      Object.keys(_where).forEach(key => {
+        const value = _where[key];
+        if (typeof value === 'undefined' || value === '') {
+          return;
+        }
+        if (key.indexOf('_time') > -1) {
+          const timestamp = _where[key] / 1000;
+          whereStr += `DATE_FORMAT(FROM_UNIXTIME(${key}),'%Y-%m-%d') = DATE_FORMAT(FROM_UNIXTIME(${timestamp}),'%Y-%m-%d') and `;
+        } else if (key.indexOf('is_') > -1) {
+          whereStr += key + '=' + _where[key] + ' and ';
+        } else {
+          whereStr += key + ' like ' + '\'%' + _where[key] + '%\' and ';
+        }
+      });
+      whereStr = whereStr.substr(0, whereStr.length - 5);
+      const data = await this.model(modelName).field(columns).where(whereStr).limit(_limit).order(_sort).page(_page, _pageSize).countSelect();
+      // 如果有关联查询，把查询结果扁平化（comment）
+      data.data.forEach(row => {
+        // 单条数据记录
+        Object.keys(row).forEach(key => {
+          // 单个字段
+          if (row[key] instanceof Object) {
+            // 对象字段
+            Object.keys(row[key]).forEach(relationKey => {
+              row[key + '_' + relationKey] = row[key][relationKey];
+            });
+            delete row[key];
+          }
+        });
+      });
       return this.success(data);
     },
+
     /**
-   * create request
-   * @return {Promise}
-   */
+     * create request
+     * @return {Promise}
+     */
     async createAction() {
-    // return this.fail("can not create");
-      const result = await this.model(modelName).add({
-        ...this.post(),
+      think.logger.debug(this.post());
+      const { id, ...params } = this.post();
+      let currentId = id;
+      if (!id) {
+        currentId = -1;
+      }
+      const singleData = {
+        ...params,
         add_time: parseInt(new Date().getTime() / 1000)
-      });
+      };
+      const result = await this.model(modelName).thenUpdate(singleData, { id: currentId });
+
+      return this.success(result);
+    },
+    /**
+     * createmul request
+     * @return {Promise}
+     */
+    async createmulAction() {
+      think.logger.debug(this.post());
+      const { _count, ...params } = this.post();
+      // 批量
+      const singleData = {
+        ...params,
+        add_time: parseInt(new Date().getTime() / 1000)
+      };
+      const data = [];
+      for (let i = 0; i < parseInt(_count); i++) {
+        data.push(singleData);
+      }
+      const result = await this.model(modelName).addMany(data);
+      return this.success(result);
+    },
+
+    /**
+     * update request
+     * @return {Promise}
+     */
+    async updateAction() {
+      const { id, _ids, ...updateBody } = this.post();
+
+      let result;
+
+      if (id && !_ids) {
+        result = await this.model(modelName).where({ id }).update(updateBody);
+      } else if (!id && _ids) {
+        result = await this.model(modelName).where('id in (' + _ids + ')').update(updateBody);
+      } else if (!id && !_ids) {
+        return this.fail('update requires id(s)');
+      } else {
+        return this.fail('can not update id');
+      }
 
       return this.success(result);
     },
 
     /**
-   * update request
-   * @return {Promise}
-   */
-    async updateAction() {
-      console.log('this.post is ', this.post());
-      const postBody = this.post();
-      const { id } = postBody;
-      delete postBody.id;
-
-      const data = await this.model(modelName).where({ id }).update(postBody);
-
-      return this.success(data);
-    },
-
-    /**
-   * delete request
-   * @return {Promise}
-   */
+     * delete request
+     * @return {Promise}
+     */
     async deleteAction() {
-    // return this.fail("can not delete");
-      const postBody = this.post();
-      const { id } = postBody;
+      const { id, _ids } = this.post();
+      let result;
 
-      if (!id) { return this.fail('id is undefined') }
+      if (id && !_ids) {
+        result = await this.model(modelName).where({ id }).delete();
+      } else if (!id && _ids) {
+        result = await this.model(modelName).where('id in (' + _ids + ')').delete();
+      } else if (!id && !_ids) {
+        return this.fail('delete requires id(s)');
+      } else {
+        return this.fail('can not set params both id and ids');
+      }
 
-      const data = await this.model(modelName).where({ id }).delete();
-
-      return this.success(data);
+      return this.success(result);
     },
+
     async testAction() {
       const service = this.service('saveimg');
-      console.log('new service.a', service.save);
       return this.success('result');
     },
     /**
-   * image action
-   * @return {Promise} []
-   */
+     * image action
+     * @return {Promise} []
+     */
     async changeimgAction() {
       const { id, column } = this.get();
       // 储存
@@ -110,9 +208,9 @@ module.exports = function(modelName, columns) {
       return this.success(result);
     },
     /**
-   * getcolumn action
-   * @return {Promise} []
-   */
+     * getcolumn action
+     * @return {Promise} []
+     */
     async readcolumnAction() {
       const model = this.model(modelName);
       const { tablePrefix } = model;
@@ -120,9 +218,9 @@ module.exports = function(modelName, columns) {
       return this.success(result);
     },
     /**
-   * sortcolumn action
-   * @return {Promise} []
-   */
+     * sortcolumn action
+     * @return {Promise} []
+     */
     async changecolumnAction() {
       const { id, column } = this.post();
       // 储存

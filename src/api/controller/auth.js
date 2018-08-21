@@ -65,7 +65,7 @@ module.exports = class extends Base {
     sessionData.user_id = userId;
 
     // 查询用户信息
-    const newUserInfo = await this.model('custom').field(['id', 'username', 'nickname', 'mobile', 'gender', 'avatar', 'birthday', 'referee', 'is_distributor', 'code']).where({ id: userId }).find();
+    const newUserInfo = await this.model('custom').getuserinfo(userId);
 
     // 更新登录信息
     userId = await this.model('custom').where({ id: userId }).update({
@@ -90,18 +90,20 @@ module.exports = class extends Base {
 
   async getmobileAction() {
     const { weapp: { appid } } = this.config();
-    const { userId } = this.ctx.state;
+    const { user_id } = this.ctx.state;
     const { encryptedData, iv } = this.post();
 
     if (think.isEmpty(encryptedData) || think.isEmpty(iv)) {
       return this.fail();
     }
 
-    const { session_key: sessionKey, openid } = await this.model('custom').where({ id: userId }).find();
+    const { session_key: sessionKey } = await this.model('custom').where({ id: user_id }).find();
 
     const getMobileSerivce = this.service('getmobile', { appId: appid, sessionKey });
     const { purePhoneNumber } = getMobileSerivce.decryptData(encryptedData, iv);
 
+    await this.model('custom').where({ id: user_id }).update({ mobile: purePhoneNumber });
+
     return this.success(purePhoneNumber);
   }
-}
+};

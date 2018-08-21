@@ -7,7 +7,7 @@ module.exports = class extends think.Service {
 
   constructor(params) {
     super();
-    console.log("params:-_----------------------", params);
+    think.logger.info('params:-_----------------------', params);
     Object.assign(this, params);
   }
   /**

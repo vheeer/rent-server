@@ -4,7 +4,7 @@ module.exports = class extends think.Controller {
     const _this = this;
     const database = 'rent';
 
-    const environment = this.config('environment');
+    // const environment = this.config('environment');
     const ingoreURL = this.config('ingoreURL');
 
     const controller = this.ctx.controller;
@@ -25,13 +25,13 @@ module.exports = class extends think.Controller {
     // 用户Id
     think.token = this.ctx.header['x-nideshop-token'] || '';
     const tokenSerivce = this.service('token', 'api');
-    const userId = await tokenSerivce.getUserId();
-    this.ctx.state.userId = userId;
+    const user_id = await tokenSerivce.getUserId();
+    this.ctx.state.user_id = user_id;
     // 如果为非公开，则验证用户是否登录
     const publicController = this.config('publicController');
     const publicAction = this.config('publicAction');
     if (!publicController.includes(controller) && !publicAction.includes(path)) {
-      if (userId <= 0) {
+      if (user_id <= 0) {
         return this.fail(401, '请先登录');
       }
     }
