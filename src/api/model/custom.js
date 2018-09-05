@@ -21,7 +21,9 @@ export default class extends think.Model {
       'idcard_positive_img_url',
       'idcard_opposite_img_url',
       'position',
-      'user_real_name'
+      'user_real_name',
+      'balance',
+      'deposit'
     ]).where({ id: userId }).find();
     return newUserInfo;
   }

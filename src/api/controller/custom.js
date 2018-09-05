@@ -19,7 +19,7 @@ class Controller extends Base {
 
     const save = this.service('savefile', SecretId, SecretKey, Bucket);
     const { err, url: idCardUrl } = await save.saveToCloud(this.file(), 'upload/idcard/');
-    if (err) return this.fail('can not save this file to cloud');
+    if (err) return this.fail('图片存储错误');
     // 识别身份证内容
     const { appkey, appid } = this.config('ai');
 
@@ -38,8 +38,11 @@ class Controller extends Base {
     const AI = this.service('tencentai', aiParams, appkey);
     let result = await AI.idcard();
     result = JSON.parse(result);
-    const { data } = result;
-    // 存储结果
+    const { msg, data } = result;
+    if (msg !== 'ok') {
+      return this.fail('识别错误');
+    }
+    // 识别结果
     let customData;
     if (type === '0') {
       customData = {
@@ -58,8 +61,20 @@ class Controller extends Base {
         idcard_opposite_img_url: idCardUrl
       };
     }
-    const updateResult = this.model('custom').where({ id: this.ctx.state.user_id }).update(customData);
-    return this.success(updateResult);
+    // 是否有未识别出的项
+    let haveEmpty = false;
+    Object.keys(customData).forEach(key => {
+      const v = customData[key];
+      if (v === undefined || v === null || v === '') {
+        haveEmpty = true;
+      }
+    });
+    if (haveEmpty === true) {
+      return this.fail('识别不完整，请重新上传');
+    }
+    // 存储、返回
+    await this.model('custom').where({ id: this.ctx.state.user_id }).update(customData);
+    return this.success(idCardUrl);
   }
   async getuserinfoAction() {
     const result = await this.model('custom').getuserinfo(this.ctx.state.user_id);
