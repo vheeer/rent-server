@@ -80,6 +80,57 @@ class Controller extends Base {
     const result = await this.model('custom').getuserinfo(this.ctx.state.user_id);
     return this.success(result);
   }
+  async rechargeAction() {
+    const that = this;
+
+    const price = 50000;
+
+    const { user_id } = this.ctx.state;
+
+    const openid = await this.model('custom').where({ id: user_id }).getField('openid', true);
+
+    if (think.isEmpty(openid)) {
+      return this.fail('找不到openid，微信支付失败');
+    }
+
+    const outTradeNo = Date.now() + '' + Math.round(new Date().getTime() / 1000);
+    const recharge_sn = this.model('order').generateOrderNumber();
+    const now = parseInt(Date.now() / 1000);
+    const rechargeParams = {
+      user_id,
+      recharge_sn,
+      total: price,
+      out_trade_no: outTradeNo,
+      add_time: now
+    };
+    console.log('rechargeParams', rechargeParams);
+    const addResult = await this.model('recharge').add(rechargeParams);
+    console.log('addResult', addResult);
+    const WeixinSerivce_params = {
+      // 非服务商模式
+      is_sub: 0,
+      appid: that.config('weapp.appid'),
+      mch_id: that.config('partner.mchId'),
+      partner_key: that.config('partner.partnerKey'),
+      openid
+    };
+
+    const WeixinSerivce = this.service('weixin', 'api', WeixinSerivce_params);
+    try {
+      // 统一下单
+      const returnParams = await WeixinSerivce.createUnifiedOrder({
+        body: '商户订单：' + outTradeNo,
+        out_trade_no: outTradeNo,
+        total_fee: price,
+        spbill_create_ip: ''
+      });
+      console.log('统一下单返回：', returnParams);
+      return this.success(returnParams);
+    } catch (err) {
+      think.logger.warn('微信支付失败', err);
+      return this.fail('微信支付失败');
+    }
+  }
 }
 Object.assign(Controller.prototype, actions);
 module.exports = Controller;

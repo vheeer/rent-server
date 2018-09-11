@@ -60,7 +60,7 @@ module.exports = class extends think.Service {
         out_trade_no: payInfo.out_trade_no,
         total_fee: payInfo.total_fee,
         spbill_create_ip: payInfo.spbill_create_ip,
-        notify_url: think.config('weixin.notify_url'),
+        notify_url: think.config('weixin.notifyUrl'),
         trade_type: 'JSAPI',
         attach: payInfo.attach
       }, (res) => {
@@ -198,12 +198,12 @@ module.exports = class extends think.Service {
       method: 'POST',
       url: 'https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=' + access_token,
       body: {
-        scene: "abcdef",
+        scene: 'abcdef',
         auto_color: true
       },
       json: true // Automatically stringifies the body to JSON
     };
-    let result = await rp(options);
+    const result = await rp(options);
 
     return result;
   }

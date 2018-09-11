@@ -6,7 +6,7 @@ module.exports = function(modelName, columns) {
       // 如果有关联查询，把查询结果扁平化（comment）
       const check = () => {
         let have_ = false;
-        data.data.forEach(row => {
+        [data].forEach(row => {
           // 单条数据记录
           Object.keys(row).forEach(key => {
             // 单个字段
@@ -134,12 +134,9 @@ module.exports = function(modelName, columns) {
       let currentId = id;
       if (!id) {
         currentId = -1;
+        params['add_time'] = parseInt(new Date().getTime() / 1000);
       }
-      const singleData = {
-        ...params,
-        add_time: parseInt(new Date().getTime() / 1000)
-      };
-      const result = await this.model(modelName).thenUpdate(singleData, { id: currentId });
+      const result = await this.model(modelName).thenUpdate(params, { id: currentId });
 
       return this.success(result);
     },
@@ -162,7 +159,6 @@ module.exports = function(modelName, columns) {
       const result = await this.model(modelName).addMany(data);
       return this.success(result);
     },
-
     /**
      * update request
      * @return {Promise}

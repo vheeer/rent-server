@@ -11,7 +11,7 @@ module.exports = {
   partner: {
     // 使用普通商户模式支付
     mchId: '1494794472', // 商户id
-    partnerKey: '' // 商户支付秘钥
+    partnerKey: 'dapingkejidapingkejidapingkejida' // 商户支付秘钥
   },
   operator: {
     // 使用服务商模式支付
