@@ -4,12 +4,15 @@ module.exports = class extends think.Controller {
     const _this = this;
     const database = 'rent';
 
-    // const environment = this.config('environment');
     const ingoreURL = this.config('ingoreURL');
 
     const controller = this.ctx.controller;
     const action = this.ctx.action;
     const path = controller + '/' + action;
+
+    // IP
+    const IP = this.ctx.header['x-forwarder-for'];
+    this.ctx.state.IP = IP;
 
     // 指定URL跳过前置操作
     if (ingoreURL.includes(path)) {

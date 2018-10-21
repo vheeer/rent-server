@@ -1,6 +1,8 @@
-const Base = require('./base.js');
 const crypto = require('crypto');
 const rp = require('request-promise');
+const fs = require('fs');
+const path = require('path');
+const Base = require('./base.js');
 
 module.exports = class extends Base {
   async loginAction() {
@@ -8,7 +10,9 @@ module.exports = class extends Base {
     const fullUserInfo = this.post('userInfo');
     const userInfo = fullUserInfo.userInfo;
 
-    const clientIp = ''; // 暂时不记录 ip
+    const configXML = fs.readFileSync(path.join(__dirname, '../../../setting/config.xml'), 'utf-8');
+
+    const clientIp = this.ctx.state.IP; // 记录 ip
     const thistime = parseInt(new Date().getTime() / 1000); // 当前时间戳
 
     const { weapp: { appid, appSecret } } = this.config();
@@ -81,7 +85,7 @@ module.exports = class extends Base {
       return this.fail('没有用户信息，登录失败');
     }
 
-    return this.success({ token: sessionKey, userInfo: newUserInfo });
+    return this.success({ token: sessionKey, userInfo: newUserInfo, setting: configXML });
   }
 
   async logoutAction() {

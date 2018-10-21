@@ -12,11 +12,12 @@ class Controller extends Base {
   }
 
   async getuserAction() {
+    const { userName } = this.ctx.state;
+    const userInfo = await this.model('account').where({ username: userName }).find();
     const data = {
-      name: 'Messi',
-      avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
-      userid: '00000001',
-      notifyCount: 19
+      name: userInfo.username,
+      avatar: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJCcMHlEn9hXCSia0qiayTjahopgnEVBVkGYfpfN7Imw7REPzk0VoUfsegSknQzqDJ8r6F5iaQKtKFxA/132',
+      userid: userInfo.id
     };
     return this.success(data);
   }

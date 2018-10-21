@@ -11,6 +11,11 @@ module.exports = class extends think.Controller {
     const controller = this.ctx.controller;
     const action = this.ctx.action;
     const path = controller + '/' + action;
+    
+    // IP
+    const IP = this.ctx.header['x-forwarder-for'];
+    this.ctx.state.IP = IP;
+
 
     // 多商户
     this.model_1 = this.model;
@@ -57,6 +62,8 @@ module.exports = class extends think.Controller {
         this.status = 401;
         this.ctx.body = noAuth;
         return false;
+      } else {
+        this.ctx.state.userName = userName;
       }
     }
   }

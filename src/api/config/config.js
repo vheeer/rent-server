@@ -10,7 +10,8 @@ module.exports = {
   publicController: [
     // 可以公开访问的Controller
     'goods',
-    'shop'
+    'shop',
+    'setting'
   ],
   publicAction: [
     // 可以公开访问的Action
