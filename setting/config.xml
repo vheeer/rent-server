@@ -1,58 +1,57 @@
-
 <root id="root">
     <weapp>
-        <common>
-            <goods_sn>商品号</goods_sn>
-            <shop>所在店铺</shop>
-            <user>使用者</user>
-            <price>单价</price>
-            <rest>剩余时长</rest>
+        <common title="&#x901A;&#x7528;" desc="&#x5728;&#x8FD9;&#x91CC;&#x8BBE;&#x7F6E;&#x5C0F;&#x7A0B;&#x5E8F;&#x901A;&#x7528;&#x6587;&#x672C;">
+            <goods_sn>&#x5546;&#x54C1;&#x53F7;</goods_sn>
+            <shop>&#x6240;&#x5728;&#x5E97;&#x94FA;</shop>
+            <user>&#x4F7F;&#x7528;&#x8005;</user>
+            <price>&#x5355;&#x4EF7;</price>
+            <rest>&#x5269;&#x4F59;&#x65F6;&#x957F;</rest>
         </common>
-        <pages>
+        <pages title="&#x9875;&#x9762;" desc="&#x5728;&#x8FD9;&#x91CC;&#x8BBE;&#x7F6E;&#x9875;&#x9762;&#x6587;&#x672C;">
             <!--主页-->
-            <index>
+            <index title="&#x4E3B;&#x9875;" desc="&#x60A8;&#x53EF;&#x4EE5;&#x5728;&#x8FD9;&#x91CC;&#x4FEE;&#x6539;&#x9875;&#x4E3B;&#x9875;&#x7684;&#x6587;&#x672C;">
                 <!--扫码按钮文字-->
-                <scan>扫码租赁</scan>
+                <scan>&#x626B;&#x7801;&#x79DF;&#x8D41;</scan>
                 <!--扫码按钮下方提示文字-->
-                <scan-notice>保护病人财产安全，扫码前请填写信息</scan-notice>
+                <scan-notice>&#x4FDD;&#x62A4;&#x75C5;&#x4EBA;&#x8D22;&#x4EA7;&#x5B89;&#x5168;&#xFF0C;&#x626B;&#x7801;&#x524D;&#x8BF7;&#x586B;&#x5199;&#x4FE1;&#x606F;</scan-notice>
             </index>
             <!--服务页-->
-            <service>
+            <service title="&#x670D;&#x52A1;&#x9875;" desc="&#x60A8;&#x53EF;&#x4EE5;&#x5728;&#x8FD9;&#x91CC;&#x4FEE;&#x6539;&#x670D;&#x52A1;&#x9875;&#x4E2D;&#x7684;&#x6587;&#x672C;">
                 <!--订单中心按钮文字-->
-                <order-button-text>订单中心</order-button-text>
+                <order-button-text>&#x8BA2;&#x5355;&#x4E2D;&#x5FC3;</order-button-text>
                 <!--订单中心按钮提示-->
-                <order-button-text-1>您有待确认的订单</order-button-text-1>
-                <order-button-text-2>您有计费中的订单</order-button-text-2>
-                <order-button-text-3>您有待确认的订单</order-button-text-3>
+                <order-button-text-1>&#x60A8;&#x6709;&#x5F85;&#x786E;&#x8BA4;&#x7684;&#x8BA2;&#x5355;</order-button-text-1>
+                <order-button-text-2>&#x60A8;&#x6709;&#x8BA1;&#x8D39;&#x4E2D;&#x7684;&#x8BA2;&#x5355;</order-button-text-2>
+                <order-button-text-3>&#x60A8;&#x6709;&#x5F85;&#x786E;&#x8BA4;&#x7684;&#x8BA2;&#x5355;</order-button-text-3>
                 <!--当前业务状态提示-->
-                <status-0>请扫码用车</status-0>
-                <status-1>等待工作人员确认使用...</status-1>
-                <status-2>正在用车...</status-2>
-                <status-3>等待工作人员确认还车...</status-3>
+                <status-0>&#x8BF7;&#x626B;&#x7801;&#x7528;&#x8F66;</status-0>
+                <status-1>&#x7B49;&#x5F85;&#x5DE5;&#x4F5C;&#x4EBA;&#x5458;&#x786E;&#x8BA4;&#x4F7F;&#x7528;...</status-1>
+                <status-2>&#x6B63;&#x5728;&#x7528;&#x8F66;...</status-2>
+                <status-3>&#x7B49;&#x5F85;&#x5DE5;&#x4F5C;&#x4EBA;&#x5458;&#x786E;&#x8BA4;&#x8FD8;&#x8F66;...</status-3>
                 <!--申请还车提示-->
-                <apply-return-notice>工作人员确认还车后方可再次用车</apply-return-notice>
+                <apply-return-notice>&#x5DE5;&#x4F5C;&#x4EBA;&#x5458;&#x786E;&#x8BA4;&#x8FD8;&#x8F66;&#x540E;&#x65B9;&#x53EF;&#x518D;&#x6B21;&#x7528;&#x8F66;</apply-return-notice>
                 <!--没有进行中的订单提示-->
-                <status-0-bottom>没有正在进行中的订单</status-0-bottom>
+                <status-0-bottom>&#x6CA1;&#x6709;&#x6B63;&#x5728;&#x8FDB;&#x884C;&#x4E2D;&#x7684;&#x8BA2;&#x5355;</status-0-bottom>
             </service>
             <!--个人页-->
-            <ucenter>
+            <ucenter title="&#x4E2A;&#x4EBA;&#x9875;" desc="&#x60A8;&#x53EF;&#x4EE5;&#x5728;&#x8FD9;&#x91CC;&#x4FEE;&#x6539;&#x4E2A;&#x4EBA;&#x9875;&#x4E2D;&#x7684;&#x6587;&#x672C;">
                 <!--城市选择按钮文字-->
-                <city-choose-button>所在城市</city-choose-button>
+                <city-choose-button>&#x6240;&#x5728;&#x57CE;&#x5E02;</city-choose-button>
                 <!--商铺选择按钮文字-->
-                <shop-choose-button>所在医院</shop-choose-button>
+                <shop-choose-button>&#x6240;&#x5728;&#x533B;&#x9662;</shop-choose-button>
                 <!--商铺位置标题-->
-                <shop-position-title>医院位置</shop-position-title>
+                <shop-position-title>&#x533B;&#x9662;&#x4F4D;&#x7F6E;</shop-position-title>
                 <!--设备描述标题-->
-                <shop-desc-title>设备描述</shop-desc-title>
+                <shop-desc-title>&#x8BBE;&#x5907;&#x63CF;&#x8FF0;</shop-desc-title>
                 <!--个人信息标题-->
-                <columns-title>领取人及患者信息</columns-title>
-                <columns>
-                    <real_name>领取人姓名</real_name>
-                    <gender>领取人性别</gender>
-                    <mobile>联系方式</mobile>
-                    <card_id>身份证号</card_id>
-                    <user-real-name>使用者姓名</user-real-name>
-                    <user-position>使用者位置</user-position>
+                <columns-title>&#x9886;&#x53D6;&#x4EBA;&#x53CA;&#x60A3;&#x8005;&#x4FE1;&#x606F;</columns-title>
+                <columns title="&#x8EAB;&#x4EFD;&#x4FE1;&#x606F;" desc="&#x60A8;&#x53EF;&#x4EE5;&#x5728;&#x8FD9;&#x91CC;&#x4FEE;&#x6539;&#x7528;&#x6237;&#x8EAB;&#x4EFD;&#x4FE1;&#x606F;&#x63D0;&#x793A;&#x6587;&#x672C;">
+                    <real_name>&#x9886;&#x53D6;&#x4EBA;&#x59D3;&#x540D;</real_name>
+                    <gender>&#x9886;&#x53D6;&#x4EBA;&#x6027;&#x522B;</gender>
+                    <mobile>&#x8054;&#x7CFB;&#x65B9;&#x5F0F;</mobile>
+                    <card_id>&#x8EAB;&#x4EFD;&#x8BC1;&#x53F7;</card_id>
+                    <user-real-name>&#x4F7F;&#x7528;&#x8005;&#x59D3;&#x540D;</user-real-name>
+                    <user-position>&#x4F7F;&#x7528;&#x8005;&#x4F4D;&#x7F6E;</user-position>
                 </columns>
             </ucenter>
         </pages>
