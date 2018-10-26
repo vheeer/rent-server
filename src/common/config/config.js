@@ -1,6 +1,6 @@
 // default config
 const port = 8361;
-const host = 'http:127.0.0.1:' + port;
+const host = 'https://www.dapingkeji.cn/rent-dev';
 module.exports = {
   port,
   workers: 1,

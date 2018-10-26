@@ -5,7 +5,6 @@ module.exports = {
   ],
   ingoreURL: [
     // 跳过前置操作的接口
-    'pay/notify'
   ],
   publicController: [
     // 可以公开访问的Controller
@@ -15,6 +14,7 @@ module.exports = {
   ],
   publicAction: [
     // 可以公开访问的Action
-    'auth/login'
+    'auth/login',
+    'pay/notify_recharge'
   ]
 };
