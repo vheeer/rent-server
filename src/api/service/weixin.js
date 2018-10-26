@@ -4,7 +4,6 @@ const rp = require('request-promise');
 const WeiXinPay = require('./weixinpay');
 
 module.exports = class extends think.Service {
-
   constructor(params) {
     super();
     think.logger.info('params:-_----------------------', params);
@@ -52,7 +51,7 @@ module.exports = class extends think.Service {
   async createUnifiedOrder(payInfo) {
     const weixinpay = new WeiXinPay(this);
     const { appid, sub_appid, partner_key, is_sub } = this;
-    console.log("weixinpay: ", weixinpay)
+    console.log('weixinpay: ', weixinpay);
 
     return new Promise((resolve, reject) => {
       weixinpay.createUnifiedOrder({
@@ -60,7 +59,7 @@ module.exports = class extends think.Service {
         out_trade_no: payInfo.out_trade_no,
         total_fee: payInfo.total_fee,
         spbill_create_ip: payInfo.spbill_create_ip,
-        notify_url: think.config('weixin.notifyUrl'),
+        notify_url: payInfo.notify_url,
         trade_type: 'JSAPI',
         attach: payInfo.attach
       }, (res) => {
@@ -72,7 +71,7 @@ module.exports = class extends think.Service {
             'package': 'prepay_id=' + res.prepay_id,
             'signType': 'MD5'
           };
-          const currentAppid = is_sub?sub_appid:appid; //再次签名时用到的appid
+          const currentAppid = is_sub ? sub_appid : appid; // 再次签名时用到的appid
           const paramStr = `appId=${currentAppid}&nonceStr=${returnParams.nonceStr}&package=${returnParams.package}&signType=${returnParams.signType}&timeStamp=${returnParams.timeStamp}&key=` + partner_key;
           returnParams.paySign = md5(paramStr).toUpperCase();
           resolve(returnParams);
@@ -133,35 +132,33 @@ module.exports = class extends think.Service {
       }
     }
 
-    console.log("处理回调结果： ", notifyObj);
+    console.log('处理回调结果： ', notifyObj);
 
     // 查找正确的partner_key
     const { attach } = notifyObj;
     const attach_obj = {};
-    const attach_params = attach.split("&");
+    const attach_params = attach.split('&');
     attach_params.forEach(item => {
-      const [ key, value ] = item.split("=");
+      const [ key, value ] = item.split('=');
       attach_obj[key] = value;
     });
-    let { mch, is_sub } = attach_obj;
+    const { mch, is_sub } = attach_obj;
     let partner_key;
-    if(is_sub === "1")
-      partner_key = that.config("operator.partner_key");
-    else if(is_sub === "0"){
-      const mchInfo = await that.model("account", "mch").where({ acc: mch }).find();
+    if (is_sub === '1') { partner_key = that.config('operator.partner_key') } else if (is_sub === '0') {
+      const mchInfo = await that.model('account', 'mch').where({ acc: mch }).find();
       partner_key = mchInfo.partner_key;
     }
-    console.log("秘钥", partner_key);
+    console.log('秘钥', partner_key);
 
     if (notifyObj.return_code !== 'SUCCESS' || notifyObj.result_code !== 'SUCCESS') {
       return false;
     }
     const signString = this.signQuery(this.buildQuery(notifyObj), partner_key);
-    console.log("签名后", notifyObj);
+    console.log('签名后', notifyObj);
     if (think.isEmpty(sign) || signString !== sign) {
       return false;
     }
-    console.log("比较后", notifyObj);
+    console.log('比较后', notifyObj);
     return { ...attach_obj, ...notifyObj };
   }
 
@@ -181,7 +178,7 @@ module.exports = class extends think.Service {
       }
     };
     let result = await rp(options);
-    console.log("获取的token: ", result);
+    console.log('获取的token: ', result);
     result = JSON.parse(result);
     const { access_token } = result;
 

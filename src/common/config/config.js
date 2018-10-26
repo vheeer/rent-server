@@ -1,16 +1,18 @@
 // default config
+const port = 8361;
+const host = 'http:127.0.0.1:' + port;
 module.exports = {
-  port: 8361,
+  port,
   workers: 1,
   certRoot: '', // 证书
   filePath: '', // 服务器文件储存
   weapp: {
-    appid: 'wxbd3457302f9c2d31', // 小程序appid
-    appSecret: 'e8cf754ee51bb6346956edea7f5dbb86' // 小程序秘钥
+    appid: 'wx59b2adb6fcd71a17', // 小程序appid
+    appSecret: 'c516ee5e0ca1f9d52176904ed5b3f602' // 小程序秘钥
   },
   partner: {
     // 使用普通商户模式支付
-    mchId: '1494794472', // 商户id
+    mchId: '1516200031', // 商户id
     partnerKey: 'dapingkejidapingkejidapingkejida' // 商户支付秘钥
   },
   operator: {
@@ -20,7 +22,10 @@ module.exports = {
     partnerKey: '' // 服务商秘钥
   },
   weixin: {
-    notifyUrl: 'http:127.0.0.1:8361/api/pay/notify' // 微信支付异步通知
+    notifyUrls: {
+      // 微信支付异步通知
+      recharge: host + '/api/pay/notify_recharge'
+    }
   },
   ai: {
     appid: '1106977728',

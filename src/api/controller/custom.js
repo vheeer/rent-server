@@ -83,7 +83,8 @@ class Controller extends Base {
   async rechargeAction() {
     const that = this;
 
-    const price = 50000;
+    const price = 5;
+    const { notifyUrls: { recharge: recharge_notify } } = this.config('weixin');
 
     const { user_id } = this.ctx.state;
 
@@ -99,7 +100,7 @@ class Controller extends Base {
     const rechargeParams = {
       user_id,
       recharge_sn,
-      total: price,
+      total_fee: price,
       out_trade_no: outTradeNo,
       add_time: now
     };
@@ -122,6 +123,7 @@ class Controller extends Base {
         body: '商户订单：' + outTradeNo,
         out_trade_no: outTradeNo,
         total_fee: price,
+        notify_url: recharge_notify,
         spbill_create_ip: ''
       });
       console.log('统一下单返回：', returnParams);

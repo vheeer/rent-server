@@ -12,8 +12,8 @@ var builder = new xml2js.Builder();
  * @return {Object}       function
  */
 Function.prototype.add = Function.prototype.add || function(name, value) {
-	this.prototype[name] = value;
-	return this;
+  this.prototype[name] = value;
+  return this;
 };
 
 /**
@@ -22,16 +22,16 @@ Function.prototype.add = Function.prototype.add || function(name, value) {
  * @return {Object}                  function
  */
 Function.prototype.inherits = Function.prototype.inherits || function(superConstructor) {
-	var arr = arguments;
-	if (Array.isArray(arguments[0]) && arguments.length === 1) {
-		arr = arguments[0];
-	}
-	for (var item = arr.length; item >= 0; item--) {
-		for (var key in arr[item]) {
-			this.prototype[key] = arr[item][key];
-		}
-	}
-	return this;
+  var arr = arguments;
+  if (Array.isArray(arguments[0]) && arguments.length === 1) {
+    arr = arguments[0];
+  }
+  for (var item = arr.length; item >= 0; item--) {
+    for (var key in arr[item]) {
+      this.prototype[key] = arr[item][key];
+    }
+  }
+  return this;
 };
 
 /**
@@ -40,51 +40,51 @@ Function.prototype.inherits = Function.prototype.inherits || function(superConst
  */
 function WXPayUrl() {}
 WXPayUrl.add('url', {
-	unifiedorder: 'https://api.mch.weixin.qq.com/pay/unifiedorder', //统一下单
-	orderquery: 'https://api.mch.weixin.qq.com/pay/orderquery', //查询订单
-	closeorder: 'https://api.mch.weixin.qq.com/pay/closeorder', //关闭订单
-	refund: 'https://api.mch.weixin.qq.com/pay/refund', //申请退款
-	refundquery: 'https://api.mch.weixin.qq.com/pay/refundquery', //查询退款
-	downloadbill: 'https://api.mch.weixin.qq.com/pay/downloadbill', //下载对账单
-	report: 'https://api.mch.weixin.qq.com/pay/report' //交易保障
+  unifiedorder: 'https://api.mch.weixin.qq.com/pay/unifiedorder', // 统一下单
+  orderquery: 'https://api.mch.weixin.qq.com/pay/orderquery', // 查询订单
+  closeorder: 'https://api.mch.weixin.qq.com/pay/closeorder', // 关闭订单
+  refund: 'https://api.mch.weixin.qq.com/pay/refund', // 申请退款
+  refundquery: 'https://api.mch.weixin.qq.com/pay/refundquery', // 查询退款
+  downloadbill: 'https://api.mch.weixin.qq.com/pay/downloadbill', // 下载对账单
+  report: 'https://api.mch.weixin.qq.com/pay/report' // 交易保障
 });
 /**
  * @description 微信支付工具类函数
  */
 function Utils() {
-	this.init = function() {};
+  this.init = function() {};
 }
 Utils
-	.add('options', {})
-	.add('parseWXReturnXML', function(xmlObject) {
-		var newObject = {};
-		xmlObject = xmlObject.xml || {};
-		for (var key in xmlObject) {
-			newObject[key] = xmlObject[key][0];
-		}
-		return newObject;
-	})
-	.add('createNonceStr', function() {
-		return Math.random().toString(36).substr(2, 15);
-	})
-	.add('createTimeStamp', function() {
-		return parseInt(new Date().getTime() / 1000) + '';
-	})
-	.add('sign', function(options) {
-		var ops = options || {};
-		var
-			keys =
+  .add('options', {})
+  .add('parseWXReturnXML', function(xmlObject) {
+    var newObject = {};
+    xmlObject = xmlObject.xml || {};
+    for (var key in xmlObject) {
+      newObject[key] = xmlObject[key][0];
+    }
+    return newObject;
+  })
+  .add('createNonceStr', function() {
+    return Math.random().toString(36).substr(2, 15);
+  })
+  .add('createTimeStamp', function() {
+    return parseInt(new Date().getTime() / 1000) + '';
+  })
+  .add('sign', function(options) {
+    var ops = options || {};
+    var
+      keys =
 			Object.keys(ops)
-			.filter(function(item) {
-				return ops[item] !== undefined && ops[item] !== '' && ['pfx', 'partner_key', 'sign', 'key'].indexOf(item) < 0;
-			})
-			.sort()
-			.map(function(key) {
-				return key + '=' + ops[key];
-			})
-			.join('&') + '&key=' + this.partner_key;
-		return md5(keys).toUpperCase();
-	});
+			  .filter(function(item) {
+			    return ops[item] !== undefined && ops[item] !== '' && ['pfx', 'partner_key', 'sign', 'key'].indexOf(item) < 0;
+			  })
+			  .sort()
+			  .map(function(key) {
+			    return key + '=' + ops[key];
+			  })
+			  .join('&') + '&key=' + this.partner_key;
+    return md5(keys).toUpperCase();
+  });
 
 /**
  * @description 微信小程序支付
@@ -93,21 +93,21 @@ Utils
  * @Date(2016-11-22)
  */
 function WeiXinPay() {
-	this.init.apply(this, arguments);
+  this.init.apply(this, arguments);
 }
 
 WeiXinPay
-//继承 
-	.inherits(new Utils(), new WXPayUrl())
-	/**
+// 继承
+  .inherits(new Utils(), new WXPayUrl())
+/**
 	 * @description init
 	 */
-	.add('init', function() {
-		for (var key in arguments[0]) {
-			this[key] = arguments[0][key];
-		}
-	})
-	/**
+  .add('init', function() {
+    for (var key in arguments[0]) {
+      this[key] = arguments[0][key];
+    }
+  })
+/**
 	 * 创建统一订单
 	 * @param  {[type]} options       [description]
 	 * @param  {[type]} fn)           {		var       that  [description]
@@ -115,92 +115,90 @@ WeiXinPay
 	 * @param  {[type]} function(err, response,     body) {			console.log('body', body);			parseString(body, function(err, result) {				fn(that.parseWXReturnXML(result));			} [description]
 	 * @return {[type]}               [description]
 	 */
-	.add('createUnifiedOrder', function(param, fn) {
-		var that = this;
-		var ops = param || {};
-		var nonce_str = that.createNonceStr();
-		// 必须参加签名
-		ops.appid = that.appid;
-		ops.mch_id = that.mch_id;
-		ops.nonce_str = nonce_str;
+  .add('createUnifiedOrder', function(param, fn) {
+    var that = this;
+    var ops = param || {};
+    var nonce_str = that.createNonceStr();
+    // 必须参加签名
+    ops.appid = that.appid;
+    ops.mch_id = that.mch_id;
+    ops.nonce_str = nonce_str;
 
-		if(that.is_sub){
-			// 服务商模式需签名项
-			ops.sub_appid = that.sub_appid;
-			ops.sub_mch_id = that.sub_mch_id;
-			ops.sub_openid = that.sub_openid;
-		}else{
-			// 非服务商模式需签名项
-			ops.openid = that.openid;
-		}
-		ops.sign = that.sign(ops);
+    if (that.is_sub) {
+      // 服务商模式需签名项
+      ops.sub_appid = that.sub_appid;
+      ops.sub_mch_id = that.sub_mch_id;
+      ops.sub_openid = that.sub_openid;
+    } else {
+      // 非服务商模式需签名项
+      ops.openid = that.openid;
+    }
+    ops.sign = that.sign(ops);
 
-
-		const body = builder.buildObject(ops);
-		console.log("统一下单提交body ", body);
-		request({
-			url: that.url.unifiedorder,
-			method: 'POST',
-			body,
-			agentOptions: {
-				pfx: that.pfx,
-				passphrase: that.mch_id
-			}
-		}, function(err, response, body) {
-			parseString(body, function(err, result) {
-				console.log("body", body);
-				fn(that.parseWXReturnXML(result));
-			});
-		});
-		return that;
-	})
-	/**
+    const body = builder.buildObject(ops);
+    console.log('统一下单提交body ', body);
+    request({
+      url: that.url.unifiedorder,
+      method: 'POST',
+      body,
+      agentOptions: {
+        pfx: that.pfx,
+        passphrase: that.mch_id
+      }
+    }, function(err, response, body) {
+      parseString(body, function(err, result) {
+        console.log('body', body);
+        fn(that.parseWXReturnXML(result));
+      });
+    });
+    return that;
+  })
+/**
 	 * @description 查寻订单
 	 * @param  {Object} param
 	 * @param  {Function} fn) callback
 	 * @return {Object} Constructor
 	 */
-	.add('queryOrder', function(param, fn) {
-		var that = this;
-		param.nonce_str = param.nonce_str || that.createNonceStr();
+  .add('queryOrder', function(param, fn) {
+    var that = this;
+    param.nonce_str = param.nonce_str || that.createNonceStr();
 
-		param.appid = that.appid;
-		param.mch_id = that.mch_id;
-		param.sign = that.sign(param);
+    param.appid = that.appid;
+    param.mch_id = that.mch_id;
+    param.sign = that.sign(param);
 
-		request({
-			url: that.url.orderquery,
-			method: 'POST',
-			body: builder.buildObject(param)
-		}, function(err, response, body) {
-			parseString(body, function(err, result) {
-				fn(that.parseWXReturnXML(result));
-			});
-		});
-		return that;
-	})
-	/**
+    request({
+      url: that.url.orderquery,
+      method: 'POST',
+      body: builder.buildObject(param)
+    }, function(err, response, body) {
+      parseString(body, function(err, result) {
+        fn(that.parseWXReturnXML(result));
+      });
+    });
+    return that;
+  })
+/**
 	 * @description 关闭订单
 	 * @param  {Object} param
 	 * @param  {Function} fn) callback
 	 * @return {Object} Constructor
 	 */
-	.add('closeorder', function(param, fn) {
-		var that = this;
-		param.appid = this.appid;
-		param.mch_id = this.mch_id;
-		param.nonce_str = param.nonce_str || that.createNonceStr();
-		param.sign = that.sign(param);
-		request({
-			url: this.url.closeorder,
-			method: 'POST',
-			body: builder.buildObject(param)
-		}, function(err, response, body) {
-			parseString(body, function(err, result) {
-				fn(that.parseWXReturnXML(result));
-			});
-		});
-
-	});
+  .add('closeorder', function(param, fn) {
+    var that = this;
+    param.appid = this.appid;
+    param.mch_id = this.mch_id;
+    param.nonce_str = param.nonce_str || that.createNonceStr();
+    param.sign = that.sign(param);
+    request({
+      url: this.url.closeorder,
+      method: 'POST',
+      body: builder.buildObject(param)
+    }, function(err, response, body) {
+      parseString(body, function(err, result) {
+        fn(that.parseWXReturnXML(result));
+      });
+    });
+  });
 
 module.exports = WeiXinPay;

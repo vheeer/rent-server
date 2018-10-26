@@ -2,8 +2,11 @@
 const Base = require('./base.js');
 
 module.exports = class extends Base {
-  async notifyAction() {
-    think.logger.info('----------------weixin notify----------------');
+  async rechangeAction() {
+
+  }
+  async notify_rechargeAction() {
+    think.logger.info('----------------充值结果反馈----------------');
     const WeixinSerivce = this.service('weixin', 'api');
     think.logger.info("this.post('xml')", this.post('xml'));
 
@@ -14,7 +17,7 @@ module.exports = class extends Base {
       return `<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[支付失败]]></return_msg></xml>`;
     }
 
-    const { out_trade_no } = result;
+    const { out_trade_no, attch } = result;
 
     const recharge = await this.model('recharge').where({ out_trade_no }).find();
 
@@ -29,8 +32,15 @@ module.exports = class extends Base {
       think.logger.info('已经支付成功');
       return `<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[已经支付成功]]></return_msg></xml>`;
     }
+    const updateParams = {
+      attch,
+      result,
+      pay_status: 2
+    };
 
-    if (this.model('order').updatePayStatus(out_trade_no, 2)) {
+    console.log('updateParmes', updateParams)
+
+    if (this.model('recharge').update(updateParams).where({ out_trade_no: out_trade_no })) {
     } else {
       return `<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[订单不存在]]></return_msg></xml>`;
     }
