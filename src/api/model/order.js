@@ -6,7 +6,7 @@ module.exports = class extends think.Model {
       goods: {
         model: 'goods',
         type: think.Model.BELONG_TO,
-        field: 'id, goods_sn, shop_id'
+        field: 'id, goods_sn, shop_id, code_img_url'
       }
     };
   }

@@ -1,3 +1,4 @@
+import Base from './base';
 const fields = {
   'id': '',
   'username': '',
@@ -20,9 +21,10 @@ const fields = {
   'position': '未填写使用地点，请完善信息',
   'user_real_name': '未填写使用者姓名，请完善信息',
   'balance': '',
-  'deposit': ''
+  'deposit': '',
+  'is_paid': ''
 };
-export default class extends think.Model {
+export default class extends Base {
   async getuserinfo(userId) {
     return this.field(Object.keys(fields)).where({ id: userId }).find();
   }

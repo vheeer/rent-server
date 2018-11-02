@@ -27,6 +27,7 @@
     "think-view-nunjucks": "^1.0.1",
     "thinkjs": "^3.0.0",
     "urlencode": "^1.1.0",
+    "wx-payment": "^1.1.0",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {

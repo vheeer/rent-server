@@ -27,7 +27,7 @@ module.exports = class extends think.Controller {
     if (environment !== 'production') {
       this.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8000');
       this.header('Access-Control-Allow-Headers', 'withcredentials');
-      this.header('Access-Control-Allow-Credentials', 'true');
+      // this.header('Access-Control-Allow-Credentials', 'true');
     }
     if (!(authIgnore.includes(path))) {
       // 请求需要登录校验

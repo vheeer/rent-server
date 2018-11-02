@@ -10,10 +10,11 @@ module.exports = class extends think.Controller {
     const action = this.ctx.action;
     const path = controller + '/' + action;
 
+    const xmlRoot = await this.service('getsetting').getobj();
+    const standard_deposit = xmlRoot.weapp[0].setting[0].deposit[0]._;
     // IP
     const IP = this.ctx.header['x-forwarder-for'];
     this.ctx.state.IP = IP;
-
     // 指定URL跳过前置操作
     if (ingoreURL.includes(path)) {
       return;
@@ -30,6 +31,7 @@ module.exports = class extends think.Controller {
     const tokenSerivce = this.service('token', 'api');
     const user_id = await tokenSerivce.getUserId();
     this.ctx.state.user_id = user_id;
+    this.ctx.state.currentAccount = database;
     // 如果为非公开，则验证用户是否登录
     const publicController = this.config('publicController');
     const publicAction = this.config('publicAction');

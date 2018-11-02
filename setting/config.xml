@@ -1,10 +1,14 @@
 <root id="root">
     <weapp>
+        <setting title="&#x5168;&#x5C40;" desc="&#x60A8;&#x53EF;&#x4EE5;&#x5728;&#x8FD9;&#x91CC;&#x4FEE;&#x6539;&#x5C0F;&#x7A0B;&#x5E8F;&#x57FA;&#x672C;&#x8BBE;&#x7F6E;">
+            <deposit desc="&#x62BC;&#x91D1;">300</deposit>
+            <balance desc="&#x4F59;&#x989D;">100</balance>
+        </setting>
         <common title="&#x901A;&#x7528;" desc="&#x5728;&#x8FD9;&#x91CC;&#x8BBE;&#x7F6E;&#x5C0F;&#x7A0B;&#x5E8F;&#x901A;&#x7528;&#x6587;&#x672C;">
-            <goods_sn>&#x5546;&#x54C1;&#x53F7;</goods_sn>
+            <goods_sn>&#x5E8A;&#x53F7;</goods_sn>
             <shop>&#x6240;&#x5728;&#x533B;&#x9662;</shop>
-            <user>&#x4F7F;&#x7528;&#x8005;</user>
-            <price>&#x5355;&#x4EF7;</price>
+            <user>&#x60A3;&#x8005;&#x59D3;&#x540D;</user>
+            <price>&#x4EF7;&#x683C;</price>
             <rest>&#x5269;&#x4F59;&#x65F6;&#x957F;</rest>
         </common>
         <pages title="&#x9875;&#x9762;" desc="&#x5728;&#x8FD9;&#x91CC;&#x8BBE;&#x7F6E;&#x9875;&#x9762;&#x6587;&#x672C;">
@@ -28,8 +32,11 @@
                 <status-1>&#x7B49;&#x5F85;&#x5DE5;&#x4F5C;&#x4EBA;&#x5458;&#x786E;&#x8BA4;&#x4F7F;&#x7528;...</status-1>
                 <status-2>&#x6B63;&#x5728;&#x7528;&#x8F66;...</status-2>
                 <status-3>&#x7B49;&#x5F85;&#x5DE5;&#x4F5C;&#x4EBA;&#x5458;&#x786E;&#x8BA4;&#x8FD8;&#x8F66;...</status-3>
+                <status-4>&#x8F6C;&#x8BA9;&#x4E2D;...</status-4>
                 <!--申请还车提示-->
                 <apply-return-notice>&#x5DE5;&#x4F5C;&#x4EBA;&#x5458;&#x786E;&#x8BA4;&#x8FD8;&#x8F66;&#x540E;&#x65B9;&#x53EF;&#x518D;&#x6B21;&#x7528;&#x8F66;</apply-return-notice>
+                <!-- 转让提示 -->
+                <transfer-notice>&#x5176;&#x4ED6;&#x7528;&#x6237;&#x626B;&#x8BBE;&#x5907;&#x7684;&#x4E8C;&#x7EF4;&#x7801;&#x5373;&#x53EF;&#x4F7F;&#x7528;</transfer-notice>
                 <!--没有进行中的订单提示-->
                 <status-0-bottom>&#x6CA1;&#x6709;&#x6B63;&#x5728;&#x8FDB;&#x884C;&#x4E2D;&#x7684;&#x8BA2;&#x5355;</status-0-bottom>
             </service>
@@ -42,16 +49,16 @@
                 <!--商铺位置标题-->
                 <shop-position-title>&#x533B;&#x9662;&#x4F4D;&#x7F6E;</shop-position-title>
                 <!--设备描述标题-->
-                <shop-desc-title>&#x8BBE;&#x5907;&#x63CF;&#x8FF0;</shop-desc-title>
+                <shop-desc-title>&#x540D;&#x79F0;</shop-desc-title>
                 <!--个人信息标题-->
                 <columns-title>&#x9886;&#x53D6;&#x4EBA;&#x53CA;&#x60A3;&#x8005;&#x4FE1;&#x606F;</columns-title>
                 <columns title="&#x8EAB;&#x4EFD;&#x4FE1;&#x606F;" desc="&#x60A8;&#x53EF;&#x4EE5;&#x5728;&#x8FD9;&#x91CC;&#x4FEE;&#x6539;&#x7528;&#x6237;&#x8EAB;&#x4EFD;&#x4FE1;&#x606F;&#x63D0;&#x793A;&#x6587;&#x672C;">
                     <real_name>&#x9886;&#x53D6;&#x4EBA;&#x59D3;&#x540D;</real_name>
                     <gender>&#x9886;&#x53D6;&#x4EBA;&#x6027;&#x522B;</gender>
-                    <mobile>&#x8054;&#x7CFB;&#x65B9;&#x5F0F;</mobile>
-                    <card_id>&#x8EAB;&#x4EFD;&#x8BC1;&#x53F7;</card_id>
-                    <user-real-name>&#x4F7F;&#x7528;&#x8005;&#x59D3;&#x540D;</user-real-name>
-                    <user-position>&#x4F7F;&#x7528;&#x8005;&#x4F4D;&#x7F6E;</user-position>
+                    <mobile>&#x9886;&#x53D6;&#x4EBA;&#x624B;&#x673A;</mobile>
+                    <card_id>&#x9886;&#x53D6;&#x4EBA;&#x8EAB;&#x4EFD;&#x8BC1;</card_id>
+                    <user-real-name>&#x60A3;&#x8005;&#x59D3;&#x540D;</user-real-name>
+                    <user-position>&#x6240;&#x5728;&#x75C5;&#x623F;</user-position>
                 </columns>
             </ucenter>
         </pages>
