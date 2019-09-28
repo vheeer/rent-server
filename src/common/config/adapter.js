@@ -41,7 +41,7 @@ exports.model = {
     encoding: 'utf8',
     host: '58.87.86.43',
     port: '3306',
-    user: 'root',
+    user: 'vheeer',
     password: ';Classmate1133',
     dateStrings: true
   }
