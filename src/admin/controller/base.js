@@ -29,7 +29,7 @@ module.exports = class extends think.Controller {
     //   this.header('Access-Control-Allow-Headers', 'withcredentials');
     //   // this.header('Access-Control-Allow-Credentials', 'true');
     // }
-      this.header('Access-Control-Allow-Origin', '*');
+      // this.header('Access-Control-Allow-Origin', '*');
       // this.header('Access-Control-Allow-Headers', 'withcredentials');
       // this.header('Access-Control-Allow-Credentials', 'true');
     if (!(authIgnore.includes(path))) {
