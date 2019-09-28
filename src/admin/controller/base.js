@@ -24,11 +24,13 @@ module.exports = class extends think.Controller {
       };
     }(database));
     // 开发环境设置头信息
-    if (environment !== 'production') {
+    // if (environment !== 'production') {
+    //   this.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8000');
+    //   this.header('Access-Control-Allow-Headers', 'withcredentials');
+    //   // this.header('Access-Control-Allow-Credentials', 'true');
+    // }
       this.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8000');
       this.header('Access-Control-Allow-Headers', 'withcredentials');
-      // this.header('Access-Control-Allow-Credentials', 'true');
-    }
     if (!(authIgnore.includes(path))) {
       // 请求需要登录校验
       const userName = this.cookie('userName');
