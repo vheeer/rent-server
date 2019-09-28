@@ -39,9 +39,9 @@ exports.model = {
     database: 'rent',
     prefix: '',
     encoding: 'utf8',
-    host: '140.143.130.253',
+    host: '58.87.86.43',
     port: '3306',
-    user: 'vheeer',
+    user: 'root',
     password: ';Classmate1133',
     dateStrings: true
   }
